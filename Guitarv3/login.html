@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=\, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Login Guitar Hero</h2>
+    <form action="" id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" required>
+        <br>
+        <button type="submit">Play</button>
+    </form>
+    <p id="message"></p>
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit" , function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+
+            if(username.trim() !== "")
+        {
+            localStorage.setItem("player" , JSON.stringify({username , score : 0}));
+            window.location.href = "index.html";
+        } else {
+            document.getElementById("message").innerText = "Masukkan username";
+        }
+        })
+        if (localStorage.getItem("player")) {
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

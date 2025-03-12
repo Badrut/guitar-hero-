@@ -13,21 +13,29 @@
         }
 
         canvas {
-            width: 100%;
+            width: 80%;
             height: 100vh;
             background-color: black;
         }
 
+        div {
+            width: auto;
+            height: 100vh;
+            background-color: gainsboro;
+        }
     </style>
 </head>
 
 <body>
-
-    <form action="" id="form"></form>
-
-    <canvas id="canvas">
-    </canvas>
-
+    <div class="" style="display: flex;">
+        <canvas id="canvas">
+        </canvas>
+        <div class="" id="Leaderboard">
+            <button onclick="logout()">Logout</button>
+            Leaderboard
+            <ul id="leaderboard-list"></ul>
+        </div>
+    </div>
     <script src="index.js"></script>
 </body>
 </html>

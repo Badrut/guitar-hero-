@@ -11,7 +11,12 @@ const fretWidth = 100;
 const notes = [];
 let score = 0;
 let gameOver = false;
+let misses = 0;
 let speedMultiplier = 1; 
+
+let player = JSON.parse(localStorage.getItem("player")) || { name: "Guest", score: 0 };
+let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
 
 function drawFrets() {
     ctx.fillStyle = "white";
@@ -25,7 +30,8 @@ function drawScoreBoard() {
     ctx.fillStyle = "white";
     ctx.font = "20px Arial";
     ctx.fillText("Score : " + score , 20 , 30);
-    ctx.fillText("Speed : " + speedMultiplier.toFixed(1) , 20 , 90);
+    ctx.fillText("Misses : " + misses + "/5" , 20 , 50);
+    ctx.fillText("Speed : " + speedMultiplier.toFixed(1) , 20 , 80);
 
     if (gameOver === true) {  
         ctx.fillStyle = "red";
@@ -36,7 +42,7 @@ function drawScoreBoard() {
 
 
 class Note {
-    constructor(x , speed , height)
+    constructor(x , speed)
     {
         this.x = x - fretWidth / 2;
         this.y = 0;
@@ -59,8 +65,7 @@ class Note {
 function spawnNote() {
     let randomFret = Math.floor(Math.random() * frets.length);
     let noteYSpeed = 3 * speedMultiplier;
-    let randomHeight = Math.floor(Math.random() * 80);
-    notes.push(new Note(frets[randomFret], noteYSpeed , ));
+    notes.push(new Note(frets[randomFret], noteYSpeed));
 }
 
 setInterval(spawnNote , 1000);
@@ -96,6 +101,7 @@ document.addEventListener("keyup" , (event) => {
         fretPressed[index] = false;
     }
 })
+console.log(player.username);
 
 function checkHit(index) {
     let targetFret = frets[index];
@@ -110,12 +116,40 @@ function checkHit(index) {
             score += 10;
             return;
         }
+            misses++
     }
-    score -= 5;
-    if(score < -50){
+
+    if(misses >= 5){
+      
+        saveToLeaderboard(player.username , score);
+        
         gameOver = true;
     }
 }
+
+function saveToLeaderboard(username, score) {
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+
+
+    let existingPlayer = leaderboard.find(player => player.username === username);
+
+    if (existingPlayer) {
+
+        if (score > existingPlayer.score) {
+            existingPlayer.score = score;
+        }
+    } else {
+
+        leaderboard.push({ username, score });
+    }
+
+    leaderboard.sort((a, b) => b.score - a.score);
+
+
+    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+}
+
+
 
 function gameLoop() {
     if (gameOver) {
@@ -132,12 +166,35 @@ function gameLoop() {
 
         if(note.y > canvas.height){
             notes.splice(index , 1);
-            score -= 10;
-           if (score < -50) gameOver = true;
+            misses++
+            if(misses >= 5){
+                saveToLeaderboard(player.name , score);
+                gameOver = true;
+            }
         }
     });
 
     requestAnimationFrame(gameLoop);
 }
 
+function displayLeaderboard() {
+    let leaderboard = JSON.parse(localStorage.getItem("leaderboard")) || [];
+    let leaderboardList = document.getElementById("leaderboard-list");
+
+    leaderboardList.innerHTML = "";
+
+    leaderboard.forEach((player, index) => {
+        let listItem = document.createElement("li");
+        listItem.textContent = `${index + 1}. ${player.username} - ${player.score}`;
+        leaderboardList.appendChild(listItem);
+    });
+}
+
+function logout() {
+    localStorage.removeItem("player");
+    window.location.href = "login.html";
+}
+
+
+displayLeaderboard();
 gameLoop();
