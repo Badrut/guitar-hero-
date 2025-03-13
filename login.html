@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guitar Hero Login</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(to right, #1f1c2c, #928dab);
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 320px;
+            text-align: center;
+        }
+
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            text-align: left;
+            margin: 10px 0 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #ff7e5f;
+            outline: none;
+            box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:first-child {
+            background-color: #ff7e5f;
+            color: white;
+        }
+
+        button:first-child:hover {
+            background-color: #e66950;
+        }
+
+        button:last-child {
+            background-color: #ddd;
+            color: #333;
+        }
+
+        button:last-child:hover {
+            background-color: #bbb;
+        }
+
+        #message {
+            color: red;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body style="gap: 10px;">
+
+    <div class="container" >
+        <h2>🎸 Guitar Hero 🎶</h2>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+            <p id="message"></p>
+            <div class="btn-container" id="intro">
+                <button type="submit">Play</button>
+                <button type="button" id="introduce">Introduce</button>
+            </div>
+        </form>
+    </div>
+    <div class="container" id="intro-container" style="display: none;">
+        <p>Welcome to Guitar Hero! 🎸</p>
+        <p>In this game, you will test your rhythm skills and become a true rockstar! 🚀</p>
+        <button id="close-intro">Close</button>
+    </div>
+
+
+    <script>
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value.trim();
+
+            if (username !== "") {
+                localStorage.setItem("player", JSON.stringify({ username, score: 0 }));
+                window.location.href = "index.html";
+            } else {
+                document.getElementById("message").innerText = "Masukkan username!";
+            }
+        });
+
+        if (localStorage.getItem("player")) {
+            window.location.href = "index.html";
+        }
+        
+        document.getElementById("introduce").addEventListener("click" , function() {
+            var introDiv = document.getElementById("intro-container");
+            introDiv.style.display = (introDiv.style.display === "none" || introDiv.style.display === "") ? "block" : "none";
+        })
+
+        document.getElementById("close-intro").addEventListener("click" , function() {
+            document.getElementById('intro-container').style.display = "none";
+        })
+    </script>
+
+</body>
+</html>
